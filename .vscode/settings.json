@@ -1,0 +1,15 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.tabSize": 2,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "json"],
+  "files.associations": {
+    "*.env.*": "dotenv"
+  },
+  "cSpell.words": [
+    "INDESAAS",
+    "qrcodegen",
+    "satoken"
+  ],
+}
