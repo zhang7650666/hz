@@ -71,7 +71,7 @@ const comtabs = computed(() => {
 // });
 useReady(async () => {
   const res = await getBoundingClientRect('.tabs');
-  
+
   state.tabsTop = 0;
 });
 //  // 点击搜索
@@ -109,7 +109,7 @@ const scroll = (e) => {
     <custom-navbar title="证件照采集中心" />
     <view class="page-wp page-box">
       <!-- 搜索框 -->
-      <nut-searchbar v-model="state.val" placeholder="搜索你想要的组件和API">
+      <nut-searchbar v-model="state.val" placeholder="输入想要拍摄的证件照名称">
         <template #rightin >
           <Search2 @click="onSearchBarTap"/>
         </template>
@@ -145,7 +145,7 @@ const scroll = (e) => {
             class="tab-content"
             style="height: 1000rpx;"
             @scrolltoupper="upper"
-            @scrolltolower="lower" 
+            @scrolltolower="lower"
             :scroll-into-view="state.toView"
             @scroll="scroll"
           >
@@ -161,7 +161,7 @@ const scroll = (e) => {
     </view>
   </view>
   </basic-layout>
- 
+
 </template>
 
 <style lang="scss">
@@ -172,6 +172,7 @@ const scroll = (e) => {
 .s-s {
   padding: 32rpx;
   box-sizing: border-box;
+	padding-bottom: 16rpx;
 }
 /*  输入框 */
 .fake-searchbar {
@@ -235,8 +236,10 @@ const scroll = (e) => {
   }
 }
 .custom-title {
+	font-size: 28rpx;
   color: black;
   cursor: pointer;
+	color: #666666;
 }
 .custom-title.active {
   font-weight: 600;

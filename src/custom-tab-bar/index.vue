@@ -2,6 +2,10 @@
 import { computed } from 'vue';
 import { switchTab } from '@tarojs/taro';
 import { useAppStore, useThemeStore } from '@/store';
+import homeIcon from '@/assets/images/home.png';
+import homeActiveIcon from '@/assets/images/home_active.png';
+import myIcon from '@/assets/images/my.png';
+import myActiveIcon from '@/assets/images/my_active.png';
 
 const tabBar = {
   custom: true,
@@ -10,13 +14,15 @@ const tabBar = {
   list: [
     {
       pagePath: '/pages/index/index',
-      text: '首页',
-      icon: 'i-local-wind'
+      text: '证件照',
+      iconPath: homeIcon,
+			selectedIconPath: homeActiveIcon
     },
     {
       pagePath: '/pages/my/index',
-      text: '个人中心',
-      icon: 'i-local-custom-icon'
+      text: '我的',
+			iconPath: myIcon,
+			selectedIconPath: myActiveIcon
     }
   ]
 };
@@ -43,9 +49,9 @@ export default {
   <nut-config-provider :theme="theme" :theme-vars="themeVars">
     <nut-tabbar :model-value="activeTab" bottom safe-area-inset-bottom @tab-switch="tabSwitch">
       <nut-tabbar-item v-for="item in tabBar.list" :key="item.pagePath" :name="item.pagePath" :tab-title="item.text">
-        <template #icon>
-          <div class="text-25px" :class="item.icon" />
-        </template>
+				<template #icon="props">
+       	 	<img :src="props.active ? item.selectedIconPath : item.iconPath" alt="" />
+      	</template>
       </nut-tabbar-item>
     </nut-tabbar>
   </nut-config-provider>
