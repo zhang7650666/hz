@@ -3,11 +3,11 @@
   <view class="add-card" @click="onClick">
     <view class="left">
         <view class="l-p first">
-            <text class="title">{{ info.inchName }}</text>
+            <text class="title truncate max-w-200rpx">{{ info.inchName }}</text>
             <text v-if="info.supportReceipts" class="sup sup1">支持回执</text>
             <text  v-if="info.supportQualified" class="sup sup2">支持合规检测</text>
         </view>
-        <view class="second">我是说明信息(接口缺数据，暂占位)</view>
+        <view class="second">{{info.explain}}</view>
         <view class="l-p third">
             <view v-if="info.printSize" class="tags">
                 <text class="tag">尺寸</text>
@@ -19,7 +19,7 @@
             </view>
             <view class="tags">
                 <text class="tag">大小</text>
-                <text class="desc">35*49mm</text>
+                <text class="desc">{{info.fileSize}}</text>
             </view>
         </view>
     </view>
@@ -104,9 +104,9 @@ const props = defineProps<{
   color: #666666;
   line-height: 36rpx;
   width: 580rpx;
-  // overflow: hidden; 
-  // text-overflow: ellipsis; 
-  // white-space: nowrap; 
+  // overflow: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
   margin-bottom: 12rpx;
 }
 /* 第三行样式 */

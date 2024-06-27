@@ -74,31 +74,6 @@ export const useAppStore = defineStore('app-store', {
     resetAuthStore() {
       this.$reset();
     },
-    getUserInfo() {
-      return new Promise((resolve, reject) => {
-        // 用户信息已经存在直接返回
-        if (this.userInfo) resolve(this.userInfo);
-        my.getAuthCode({
-          scopes: ['auth_user'],
-          success: authcode => {
-            console.info(authcode);
-
-            my.getAuthUserInfo({
-              success: res => {
-                this.userInfo = res;
-                resolve(this.userInfo);
-              },
-              fail: () => {
-                reject({});
-              }
-            });
-          },
-          fail: () => {
-            reject({});
-          }
-        });
-      });
-    },
     getTemplateList(){
       if (this.tabs.length > 0) return ;
       return inchtypesApi({}).then((res) => {
@@ -130,7 +105,7 @@ export const useAppStore = defineStore('app-store', {
           }
         })
       })
-      
+
     }
   }
 });

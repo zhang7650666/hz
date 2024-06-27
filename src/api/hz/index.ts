@@ -21,6 +21,16 @@ export async function test(
 }
 
 
+
+/** 用户登录API */
+export async function loginApi(options: Object) {
+  return http('/login/', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
+
 /** 全部寸照类型API */
 export async function inchtypesApi(options: Object) {
   return http('/inchtypes', {
@@ -37,14 +47,6 @@ export async function inchdetailApi(options: Object) {
   });
 }
 
-// 上传图片
-export async function inchUploadApi(options: Object) {
-  // /img/upload2 
-  return http('/img/uploadbase64', {
-    method: 'POST',
-    ...(options || {}),
-  })
-}
 
 
 // 热词殂
@@ -63,3 +65,49 @@ export async function getSearchList(options: Object) {
     ...(options || {}),
   });
 }
+
+// 上传图片base64
+export async function uploadBase64Api(options: Object) {
+  // /img/upload2
+  return http('/img/uploadbase64', {
+    method: 'POST',
+    ...(options || {}),
+  })
+}
+
+// 上传图片
+export async function upload2Api(options: Object) {
+  // /img/upload2
+  return http('/img/upload2', {
+    method: 'POST',
+    ...(options || {}),
+  })
+}
+
+
+// 图片排版APi
+export async function layoutApi(options: Object) {
+  return http('/img/layout', {
+    method: 'POST',
+    ...(options || {}),
+  })
+}
+
+
+// 订单信息API
+export async function inchOrderApi(options: Object) {
+  return http('/order/inchorder', {
+    method: 'POST',
+    ...(options || {}),
+  })
+}
+
+// 订单详情API
+export async function orderDetailApi(options: Object) {
+  return http('/order/orderdetail', {
+    method: 'POST',
+    ...(options || {}),
+  })
+}
+
+

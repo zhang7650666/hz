@@ -5,10 +5,11 @@ import Taro,{ navigateTo, useLoad, useReady } from '@tarojs/taro';
 import { getBoundingClientRect } from '@/utils/fn';
 import { Search2 } from '@nutui/icons-vue-taro';
 import namedPng from '@/assets/images/banner.png';
-import {useAppStore} from '@/store';
+import {useAppStore, useUserStore} from '@/store';
 import { computed } from 'vue';
 
 const appStore = useAppStore();
+const userStore = useUserStore();
 
 const state = reactive({
   current: 0,
@@ -30,17 +31,7 @@ definePageConfig({
 
 useLoad(() => {
   // 获取用户信息并存储数据
-  // app.getUserInfo().then(
-  //   user => {
-  //     console.log('user=====', user);
-  //     this.setData({
-  //       user
-  //     });
-  //   },
-  //   () => {
-  //     // 获取用户信息失败
-  //   }
-  // );
+	// userStore.getUserInfo();
   appStore.getTemplateList();
   state.tabs = appStore.$state.tabs;
 });

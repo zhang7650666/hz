@@ -20,7 +20,7 @@
           </view>
           <view class="l-v">
             <text class="label">文件大小</text>
-            <text class="value">缺字段</text>
+            <text class="value">{{categoryData.inchInfo.fileSize}}</text>
           </view>
           <view class="l-v">
             <text class="label">文件格式</text>
@@ -33,12 +33,12 @@
           <view class="l-v">
             <text class="label">照片底色</text>
             <view class="value">
-              <view class="item-color" :style="`background:${item}`" v-for="item in state.colors"></view>
+              <view class="item-color" :style="`background: rgb${item.colorBGR}`" v-for="item in state.colors"></view>
             </view>
           </view>
           <view class="l-v">
             <text class="label">规格说明</text>
-            <text class="value">缺字段</text>
+            <text class="value">{{categoryData.inchInfo.explain}}</text>
           </view>
           <view class="sup-list">
             <view class="sup-box" v-for="item in state.supList">
@@ -102,8 +102,9 @@ useLoad((options) => {
 })
 
 const getTemplateDetail = () => {
+	const {typeid,inchtype } = state.query
   inchdetailApi({
-    data: {'typeid':10000000,'inchtype':10000001}
+    data: {typeid,inchtype}
   }).then(res => {
     if (res.code == 200) {
       state.categoryData = res.data;
@@ -213,7 +214,7 @@ const getTemplateDetail = () => {
 }
 .step-box {
   width:152rpx;
-  position: relative; 
+  position: relative;
 }
 .step-icon{
   width: 152rpx;

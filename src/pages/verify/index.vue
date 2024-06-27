@@ -1,7 +1,7 @@
 <template>
    <basic-layout show-tab-bar>
     <custom-navbar title="规格信息" />
-   
+
     <view class="page-wp">
     <!-- 滚动区域 -->
     <view class="cate-content">
@@ -36,16 +36,16 @@
   import verifyImg from '@/assets/images/verify_img.png';
   import Taro, {useLoad, useReady} from '@tarojs/taro';
   import {useAppStore} from '@/store/index';
-  import {inchUploadApi} from '@/api/hz/index';
+  import {uploadBase64Api} from '@/api/hz/index';
   import qs from 'qs';
   const requestUrl = process.env.TARO_APP_BASE_URL;
 
 const appStore = useAppStore();
 
   const verifyList = [
-  '检测人像取景范围', 
-  '检测图片光线、色彩、清晰度', 
-  '检测面部、着装', 
+  '检测人像取景范围',
+  '检测图片光线、色彩、清晰度',
+  '检测面部、着装',
   '优化照片质量'
 ];
 
@@ -59,17 +59,20 @@ const appStore = useAppStore();
   })
 
   const uploadImage = () => {
-    inchUploadApi({
+		const {inchInfo} = appStore.currentTemplateData;
+		const {pixel, dpi, fileFormat, allowBkg, defBkg } = inchInfo;
+		const {colorName, colorBGR} = allowBkg[defBkg]
+		console.log('hhhhhh', appStore.currentTemplateData)
+    uploadBase64Api({
       data: {
-        image_path: appStore.selectImageUrl,
-        'user_id': 'kthhai',
-          'inch_type': 'oneInch',
-          'rows': 480,
-          'cols': 640,
-          'color_type': '',
-          'color_bgr': '#0000FF', // '{"blue": "#0000FF", "red": "#FF0000", "white":"#FFFFFF"}',
-          dpi: '300',
-          file_format: ''
+        image_base64: appStore.selectImageBase,
+        user_id: 'kthhai',
+				rows: pixel[0],
+				cols: pixel[1],
+				color_type: defBkg,
+				color_bgr: colorBGR, // '{"blue": "#0000FF", "red": "#FF0000", "white":"#FFFFFF"}',
+				dpi,
+				file_format: fileFormat
       }
     }).then((res) => {
       console.log('res', res);
@@ -101,7 +104,7 @@ const appStore = useAppStore();
   useLoad((options) => {
     state.query = options;
     //TODO： 上传需要调试，先直接跳到下个界面
-   
+
     uploadImage();
   })
 

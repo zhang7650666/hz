@@ -1,9 +1,9 @@
 <template>
   <view class="add-footer">
-    <view @click="() =>handleChoosePhoto('album')">
+    <view @click="() =>handleChoosePhoto('camera')">
       <text class="left-btn"  >{{isAgain ? '重新拍摄' : '拍摄'}}</text>
     </view>
-    <view @click="() => handleChoosePhoto('camera')">
+    <view @click="() => handleChoosePhoto('album')">
       <text class="right-btn" >{{isAgain ? '重新从相册选择' : '从相册选择'}}</text>
     </view>
 </view>
@@ -34,7 +34,7 @@ const handleChoosePhoto = (type: any) =>{
           appStore.selectImageUrl = res.tempFilePaths[0];
           imgToBase64(res.tempFilePaths[0]);
           Taro.redirectTo({
-            url: "/pages/verify/index?" + + qs.stringify(porps.query),
+            url: `/pages/verify/index?${qs.stringify(porps.query)}`,
           })
         },
         fail: (err) => {
@@ -63,7 +63,7 @@ const handleChoosePhoto = (type: any) =>{
         fail: (err) => {
           Taro.showToast({title: `图片检测异常:${err}`, icon: 'none'});
         },
-      }); 
+      });
     };
     // 文件压缩
     const fileCOmpress = (imgInfo, isH) => {
@@ -74,7 +74,7 @@ const handleChoosePhoto = (type: any) =>{
         success (res) {
           appStore.selectImageUrl = res.tempFilePaths[0];
           Taro.redirectTo({
-            url: "/pages/verify/index?" + qs.stringify(porps.query),
+						url: `/pages/verify/index?${qs.stringify(porps.query)}`,
           })
         },
         fail (err) {
@@ -84,7 +84,7 @@ const handleChoosePhoto = (type: any) =>{
     };
     // 将图片转成base64
     const imgToBase64 = (filePath: string) => {
-      console.log('将图片转成base64');
+      console.log('将图片转成base64', porps.query);
       const fs = Taro.getFileSystemManager();
       fs.readFile({
         filePath: filePath,
@@ -93,7 +93,7 @@ const handleChoosePhoto = (type: any) =>{
           // const base64 = Taro.arrayBufferToBase64(data);
           appStore.selectImageBase = data;
           Taro.redirectTo({
-            url: "/pages/verify/index?" + + qs.stringify(porps.query),
+            url: `/pages/verify/index?${qs.stringify(porps.query)}`,
           })
         },
         fail (err) {

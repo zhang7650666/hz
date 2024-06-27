@@ -199,6 +199,8 @@ input::-webkit-input-placeholder {
 
 /* 热门、历史 */
 .search-container {
+	flex: 1;    /* 很重要 */
+  overflow-y: auto;
   box-sizing: border-box;
   padding: 32rpx;
 }
@@ -206,7 +208,7 @@ input::-webkit-input-placeholder {
 .history {
   display: flex;
   align-items: center;
- 
+
 }
 .h-desc {
   flex: 1;

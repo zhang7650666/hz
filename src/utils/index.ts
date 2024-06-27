@@ -7,3 +7,4 @@ export * from './getNavigationBarStyle';
 export * from './getTaroRectBySelector';
 export * from './getTabbarHeight';
 export * from './fn';
+export * from './apiDiff';
