@@ -7,28 +7,28 @@
         <!-- banner -->
         <custom-swiper :list="state.swiperList"></custom-swiper>
         <!-- 规格信息 -->
-        <view class="cate-info" v-if="categoryData.inchInfo">
+        <view class="cate-info" v-if="categoryData.inch_info">
           <view class="title">规格信息</view>
           <view class="l-v">
             <text class="label">打印尺寸</text>
-            <!-- inchInfo -->
-            <text class="value">{{categoryData.inchInfo.printSize[0]}}*{{categoryData.inchInfo.printSize[1]}}mm</text>
+            <!-- inch_info -->
+            <text class="value">{{categoryData.inch_info.print_size[0]}}*{{categoryData.inch_info.print_size[1]}}mm</text>
           </view>
           <view class="l-v">
             <text class="label">像素尺寸</text>
-            <text class="value">{{categoryData.inchInfo.pixel[0]}}*{{categoryData.inchInfo.pixel[1]}}px</text>
+            <text class="value">{{categoryData.inch_info.pixel[0]}}*{{categoryData.inch_info.pixel[1]}}px</text>
           </view>
           <view class="l-v">
             <text class="label">文件大小</text>
-            <text class="value">{{categoryData.inchInfo.fileSize}}</text>
+            <text class="value">{{categoryData.inch_info.file_size}}</text>
           </view>
           <view class="l-v">
             <text class="label">文件格式</text>
-            <text class="value">{{categoryData.inchInfo.fileFormat}}</text>
+            <text class="value">{{categoryData.inch_info.file_format}}</text>
           </view>
           <view class="l-v">
             <text class="label">分辨率</text>
-            <text class="value">{{ categoryData.inchInfo.dpi }}</text>
+            <text class="value">{{ categoryData.inch_info.dpi }}</text>
           </view>
           <view class="l-v">
             <text class="label">照片底色</text>
@@ -38,20 +38,27 @@
           </view>
           <view class="l-v">
             <text class="label">规格说明</text>
-            <text class="value">{{categoryData.inchInfo.explain}}</text>
+            <text class="value">{{categoryData.inch_info.explain}}</text>
           </view>
           <view class="sup-list">
-            <view class="sup-box" v-for="item in state.supList">
+            <view class="sup-box" v-if="categoryData.inch_info.support_printing">
                 <image mode="widthFix" :src="state.checkedIcon" class="check-img"></image>
-                <text class="sup">{{item}}</text>
+                <text class="sup">支持冲印</text>
+            </view>
+						<view class="sup-box" v-if="categoryData.inch_info.support_receipts">
+                <image mode="widthFix" :src="state.checkedIcon" class="check-img"></image>
+                <text class="sup">官方回执</text>
+            </view>
+						<view class="sup-box" v-if="categoryData.inch_info.support_mailing">
+                <image mode="widthFix" :src="state.checkedIcon" class="check-img"></image>
+                <text class="sup">支持邮寄</text>
             </view>
           </view>
         </view>
         <!-- 拍摄须知 -->
         <view class="cate-info">
           <view class="title">拍摄须知</view>
-          <view class="intr-desc">
-            {{ categoryData.photoNotice }}
+          <view class="intr-desc" v-html="categoryData.photo_notice" >
           </view>
         </view>
         <!-- 示意步骤 -->
@@ -84,9 +91,8 @@ import checkedIcon from '@/assets/images/question.png';
 const appStore = useAppStore();
 
 const router = useRouter();
-// const {tableId} = router.query;
+// const {table_id} = router.query;
 const state = reactive({
-    supList: ['支持冲印', '官方回执', '支持邮寄'], // 支持列表
     checkedIcon: checkedIcon, // 选中图标icon
     stepList, // 示意列表
     colors: [], // 颜色列表
@@ -102,14 +108,15 @@ useLoad((options) => {
 })
 
 const getTemplateDetail = () => {
-	const {typeid,inchtype } = state.query
+	const {typeid,inch_type } = state.query
   inchdetailApi({
-    data: {typeid,inchtype}
+    params: {typeid, inchtype: inch_type}
   }).then(res => {
     if (res.code == 200) {
       state.categoryData = res.data;
+			state.categoryData.photo_notice = `<p>${res.data.photo_notice.replace(/\r\n\n/g, '</p><p>')}</p>`
       appStore.currentTemplateData = res.data;
-      state.colors = Object.values(res.data?.inchInfo?.allowBkg);
+      state.colors = Object.values(res.data?.inch_info?.allow_bkg);
     }
   })
 }
@@ -120,7 +127,7 @@ const getTemplateDetail = () => {
 .page-wp {
   width: 100%;
   box-sizing: border-box;
-  padding: 32rpx 32rpx 100rpx;
+  padding: 32rpx 32rpx 32rpx;
   background: #F3F7FA;
 }
 .cate-content {

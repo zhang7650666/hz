@@ -1,5 +1,5 @@
 <template>
-  <view class="add-list-item-section">
+  <view class="add-list-item-section" @click="emit('onClick', true)">
     <view class="ali-left">
       <slot name="icon">
         <view class="avatar">
@@ -14,7 +14,7 @@
           </text>
       </view>
     </view>
-    <view class="ali-right" @click="emitr('onClick', true)">
+    <view class="ali-right" >
       <slot name="extra">
         <view class="extra-content">{{ props.extraBrief }}</view>
       </slot>
@@ -34,7 +34,7 @@ const props = defineProps<{
   dataInfo: String,
 }>();
 
-const emitr = defineEmits(['onClick']);
+const emit = defineEmits(['onClick']);
 </script>
 <style lang="scss">
 .add-list-item-section {

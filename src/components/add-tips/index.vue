@@ -16,7 +16,7 @@ const props  = defineProps<{
 .add-tips-wp {
   display: flex;
   align-items: center;
-  margin-bottom: 32rpx;
+  // margin-bottom: 32rpx;
   border-radius: 16rpx;
   background: #FAF2E6;
   padding: 20rpx;

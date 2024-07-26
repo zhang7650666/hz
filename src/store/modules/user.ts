@@ -9,26 +9,29 @@ interface TabInfo {
 };
 
 interface Tabs {
-  tableId: number | string,
-  tableName: string,
+  table_id: number | string,
+  table_name: string,
   inchInfos: TabInfo[],
   selectImageUrl: string,
 }
 
 interface AuthState {
+	code: string;
   userInfo: null;
 }
 
 
 export const useUserStore = defineStore('user-store', {
   state: (): AuthState => ({
-		userInfos: {}
+		userInfos: {},
+		code: '1111'
   }),
   getters: {
   },
   actions: {
     // 获取用户信息
     getUserInfo() {
+			const that = this;
       return new Promise((resolve, reject) => {
         // 用户信息已经存在直接返回
         if (this.userInfo) resolve(this.userInfo);
@@ -36,10 +39,13 @@ export const useUserStore = defineStore('user-store', {
 					success (res) {
 						console.log('res===', res)
 						if (res.code) {
-							loginApi({code: res.code}).then((user) => {
-								console.log('user===', user)
+							that.code = res.code;
+							loginApi({params: {code: res.code}}).then((user) => {
+								if(user.code === 200) {
+									Taro.setStorageSync('token', user.data);
+									console.log('user===', user)
+								}
 							})
-
 						} else {
 							console.log('登录失败！' + res.errMsg)
 						}

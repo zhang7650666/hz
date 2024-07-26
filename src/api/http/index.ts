@@ -7,11 +7,15 @@ const TIMEOUT = 30 * 1000;
 export function http<T = any>(url: string, options: CustomOptions): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const {
-      params,
+      params = {},
       method,
       timeout = TIMEOUT,
       ...rest
     } = options;
+		if(!options.data) {
+			params.channel_id = '0001'
+		}
+
     let { headers = {} } = options;
     let { data } = options;
 
@@ -23,6 +27,7 @@ export function http<T = any>(url: string, options: CustomOptions): Promise<T> {
         queryString = `?${formatQueryString(params).toString()}`;
       }
     }
+		data.channel_id = '0001'
 
     const requestUrl = process.env.TARO_APP_BASE_URL + url + queryString;
 
@@ -44,6 +49,7 @@ export function http<T = any>(url: string, options: CustomOptions): Promise<T> {
       timeout,
       ...rest,
       success: (res: any) => {
+				console.log('相应结果====', res, requestUrl, data)
         if (res.statusCode !== 200) {
           Message.error('数据异常', 3000);
           return reject(res);

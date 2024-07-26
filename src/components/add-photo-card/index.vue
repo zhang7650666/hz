@@ -1,15 +1,16 @@
 <template>
   <view class="add-photo-list" @click="handleTap">
     <view class="order-main">
-      <view class="create-time">{{photoInfo.createTime}}</view>
-        <view class="order-desc">{{photoInfo.desc}}</view>
+      <view class="create-time">{{photoInfo.order_date}}</view>
+        <view class="order-desc">{{photoInfo.order_name}}</view>
         <view class="img-box">
-          <image mode="widthFix" :src="photoInfo.imgUrl" class="photo-img"></image>
-          <image v-if="!!photoInfo.layoutUrl" mode="widthFix" :src="photoInfo.layoutUrl" class="layout-img"></image>
+					<!-- mode="widthFix" -->
+          <image mode="widthFix" :src="photoInfo.single_photo" class="photo-img"></image>
+          <image v-if="!!photoInfo.layout_photo" mode="widthFix" :src="photoInfo.layout_photo" class="layout-img"></image>
         </view>
     </view>
-    <view class="order-no">订单号：{{photoInfo.orderNo}}</view>
-    <view class="order-no">过期时间：{{photoInfo.expireTime}}</view>
+    <view class="order-no">订单号：{{photoInfo.order_id}}</view>
+    <view class="order-no">过期时间：{{photoInfo.expiration_date}}</view>
 </view>
 </template>
 
@@ -19,11 +20,23 @@ import { toRefs } from 'vue';
 interface Oobject {
   [key: string]: any
 }
+
+	// {
+	// 	"order_id":"0001240711389511",
+	// 	"order_date":"2024-07-11",
+	// 	"order_name":"2024-08-10",
+	// 	"expiration_date":"一寸照-白色-电子版",
+	// 	"channel_id":"0001",
+	// 	"user_id":"kthhai",
+	// 	"single_photo":"/data/InchPhoto2/static/images/2024-07-11/kthhai/kthhai-1720659479156.jpg-white.jpg",
+	// 	"layout_photo":"/data/InchPhoto2/static/images/2024-07-11/kthhai/kthhai-1720659479156.jpg-white-layout.jpg"
+	// }
+
 const props = defineProps<{
   photoInfo: Oobject,
 }>()
-  const   handleTap = () => {
-    Taro.navigateTo({url: '/pages/order-detail/order-detail'});
+  const handleTap = () => {
+    // Taro.navigateTo({url: '/pages/modify/index'});
     }
 
     const {photoInfo} = toRefs(props);
@@ -62,10 +75,14 @@ const props = defineProps<{
     .photo-img {
       width: 178rpx;
       margin-right: 16rpx;
+			height: 224rpx;
+			background-size: 178rpx 224rpx;
     }
     .layout-img {
       display: block;
       width: calc(100% - 200rpx);
+			height: 224rpx;
+			background-size: calc(100% - 200rpx) 224rpx;
     }
   }
 }

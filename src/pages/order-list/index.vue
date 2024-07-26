@@ -13,57 +13,21 @@ const photoList = [
     orderNo: '138253763298475382',
     expireTime: '2024-02-10',
   },
-  {
-    createTime: '2024-01-11',
-    desc: '测试数据',
-    imgUrl: '/assets/images/verify_img.png',
-    orderNo: '138253763298475384',
-    expireTime: '2024-02-13',
-  },
-  {
-    createTime: '2024-01-10',
-    desc: 'png格式（保真高，适合打印）',
-    imgUrl: '/assets/images/layout.png',
-    orderNo: '138253763298475382',
-    expireTime: '2024-02-10',
-  },
-  {
-    createTime: '2024-01-11',
-    desc: '测试数据',
-    imgUrl: '/assets/images/verify_img.png',
-    orderNo: '138253763298475384',
-    expireTime: '2024-02-13',
-  },
-  {
-    createTime: '2024-01-11',
-    desc: '测试数据',
-    imgUrl: '/assets/images/verify_img.png',
-    orderNo: '138253763298475384',
-    expireTime: '2024-02-13',
-  },
-  {
-    createTime: '2024-01-10',
-    desc: 'png格式（保真高，适合打印）',
-    imgUrl: '/assets/images/layout.png',
-    orderNo: '138253763298475382',
-    expireTime: '2024-02-10',
-  },
-  {
-    createTime: '2024-01-11',
-    desc: '测试数据',
-    imgUrl: '/assets/images/verify_img.png',
-    orderNo: '138253763298475384',
-    expireTime: '2024-02-13',
-  },
+
 ];
 const state = reactive({
   photoList,
 })
 
 const getOrderList = () => {
-  readOrderList({}).then((res) => {
+  readOrderList({
+      data: {
+        user_id: 'kthhai',
+      }
+	}).then((res) => {
     if (res.code == 200) {
-      state.photoList = res.data?.list;
+
+      state.photoList = res.data;
     }
   })
 }
@@ -80,7 +44,7 @@ useReady(() => {
       <add-tips tips="为保护个人隐私，平台只保留近30天的数据，请及时下载和保存" :isShowTips="false" ></add-tips>
       <!-- 滚动区域 -->
       <view class="cate-content">
-        <view class="cate-info" v-for="item in state.photoList">
+        <view class="cate-info-list" v-for="item in state.photoList">
             <add-photo-card :photoInfo="item"></add-photo-card>
         </view>
       </view>
@@ -108,7 +72,7 @@ useReady(() => {
 
 }
 /* 列表信息 */
-.cate-info {
+.cate-info-list {
   background: #FFFFFF;
   border-radius: 16rpx;
   // padding: 32rpx;

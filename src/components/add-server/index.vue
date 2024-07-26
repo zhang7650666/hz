@@ -2,14 +2,23 @@
   <view class="add-base-info">
      <view class="cate-info">
         <view class="title">增值服务</view>
-        <view class="base-box add-server" v-for="(item, index) in props.serverList"  >
-            <view class="base-main">
-              <view class="base-content">
+        <view class="base-box add-server">
+            <view class="base-main" >
+              <view class="base-content" @click="handleSelectPng">
                 <text class="base-dian"></text>
-                <text class="base-desc">{{item.desc}}</text>
-                <image mode="widthFix" :src="item.isChecked? checked : check" class="select-img" @click="() => handleSelectServer(index)"></image>
+                <text class="base-desc">{{serverList.added_png}}</text>
+                <image mode="widthFix" :src="appStore.added_services.added_png? checked : check" class="select-img" ></image>
               </view>
-              <view class="colors-wp" v-if="item.type === 'colors' && item.isChecked">
+            </view>
+        </view>
+				<view class="base-box add-server">
+            <view class="base-main">
+              <view class="base-content" @click="handleSelectColor">
+                <text class="base-dian"></text>
+                <text class="base-desc">{{serverList.added_colours}}</text>
+                <image mode="widthFix" :src="appStore.added_services.added_colours? checked : check" class="select-img" ></image>
+              </view>
+              <view class="colors-wp" v-if="appStore.added_services.added_colours">
                 <!-- <add-background :data="{}"></add-background> -->
               </view>
             </view>
@@ -19,14 +28,31 @@
 </template>
 <script setup lang="ts">
   import check from  '@/assets/images/check.png'; // 选中图标icon
-  import   checked from '@/assets/images/checked.png'; // 选中图标icon
+  import checked from '@/assets/images/checked.png'; // 选中图标icon
+	import {useAppStore} from '@/store';
 
+	const appStore = useAppStore();
   const props = defineProps<{
-    serverList: Object[],
+    serverList: Object,
   }>()
 
-  const handleSelectServer = (idx) =>  {
-      };
+	// 选择图片
+	const handleSelectPng = () => {
+		appStore.$patch({
+			added_services: {
+        added_png:!appStore.added_services.added_png
+      }
+		})
+	}
+
+		// 选择底色
+		const handleSelectColor = () => {
+			appStore.$patch({
+				added_services: {
+					added_colours:!appStore.added_services.added_colours
+				}
+			})
+		}
 </script>
 <style lang="scss">
 
@@ -51,7 +77,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 28rpx;
- 
+
 }
 .add-server {
    border-bottom: thin solid #E1E4EA;

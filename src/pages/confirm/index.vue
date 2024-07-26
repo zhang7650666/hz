@@ -6,15 +6,18 @@ import layoutImg from '@/assets/images/layout.png';
 import previewImg from '@/assets/images/verify_img.png';
 import { NONAME } from 'dns';
 import {useAppStore} from '@/store/index';
-const appstore = useAppStore();
+import {orderDetailApi} from '@/api/hz/index';
+const appStore = useAppStore();
 const state = reactive({
-  layoutImg,
-  previewImg,
-  baseList: baseList, // 基础服务
-  serverList, // 增值服务列表
+	tips: "下载的为去水印高清版本！",
+  layout_photo: layoutImg,
+  single_photo: previewImg,
+  base_servers: baseList, // 基础服务
+  added_services: serverList, // 增值服务列表
   basicVisible: false,
   downVisible: false,
   progress: 0,
+	order_id: '',
 })
 
 // 关闭弹框
@@ -42,7 +45,7 @@ const showAdPopupHandler = () => {
   // state.basicVisible = true
 
   appStore.saveImage(state.resultData.layoutUrl);
- 
+
   // Taro.saveImageToPhotosAlbum({
 
   // })
@@ -67,8 +70,33 @@ const showAdPopupHandler = () => {
   // })
 }
 
+const orderDetailFn = () => {
+		const {inch_info} = appStore.currentTemplateData;
+		const {pixel, dpi, file_format, allow_bkg, def_bkg,inch_type } = inch_info;
+		const {colorName, colorBGR} = allow_bkg[def_bkg]
+		const fileName = Taro.getStorageSync('upload_fileName');
+    orderDetailApi({
+      data: {
+				user_id: 'kthhai',
+				file_name: fileName,
+				color_type: appStore.color_type || def_bkg,
+				inch_type: inch_type
+      }
+    }).then((res) => {
+			if (res.code == 200) {
+				Object.assign(state, res.data)
+				// const {order_id, tips, single_photo, layout_photo, base_servers, added_services} =  res.data
+
+				// Taro.redirectTo({
+				// 		url: `/pages/modify/index`,
+        // })
+			}
+    })
+  }
+
 useLoad(() => {
-  loadDownAnimation();
+  // loadDownAnimation();
+	orderDetailFn()
 })
 </script>
 <template>
@@ -77,18 +105,18 @@ useLoad(() => {
     <view class="page-wp">
       <!-- 滚动区域 -->
       <view class="cate-content">
-        <add-tips tips="下载的为去水印高清版本！"></add-tips>
+        <add-tips :tips="state.tips"></add-tips>
         <!-- 图片 -->
         <view class="cate-info">
           <view class="img-box">
-            <image mode="widthFix" :src="state.previewImg" class="preview-img"></image>
-            <image mode="widthFix" :src="state.layoutImg" class="verify-img"></image>
+            <image mode="widthFix" :src="state.single_photo" class="preview-img"></image>
+            <image mode="widthFix" :src="state.layout_photo" class="verify-img"></image>
           </view>
         </view>
         <!-- 基础服务 -->
-        <add-base-info :baseInfo="state.baseList"></add-base-info>
+        <add-base-info :baseInfo="state.base_servers"></add-base-info>
         <!-- 增值服务 -->
-        <add-server :serverList="state.serverList"></add-server>
+        <add-server :serverList="state.added_services"></add-server>
       </view>
       <view class="cate-footer">
         <add-download @click="showAdPopupHandler"></add-download>
@@ -226,7 +254,7 @@ useLoad(() => {
 
 .down-pop-close {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end ;
 }
 
 .down-pop-banner {

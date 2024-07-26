@@ -59,23 +59,38 @@ const appStore = useAppStore();
   })
 
   const uploadImage = () => {
-		const {inchInfo} = appStore.currentTemplateData;
-		const {pixel, dpi, fileFormat, allowBkg, defBkg } = inchInfo;
-		const {colorName, colorBGR} = allowBkg[defBkg]
-		console.log('hhhhhh', appStore.currentTemplateData)
+		const {inch_info} = appStore.currentTemplateData;
+		const {pixel, dpi, file_format, allow_bkg, def_bkg, inch_type } = inch_info;
+		const {colorName, colorBGR} = allow_bkg[def_bkg]
+		const fileName = new Date().getTime();
+		Taro.setStorageSync('upload_fileName', `${fileName}`);
+		appStore.$patch({
+			color_type: def_bkg
+		})
     uploadBase64Api({
       data: {
         image_base64: appStore.selectImageBase,
         user_id: 'kthhai',
 				rows: pixel[0],
 				cols: pixel[1],
-				color_type: defBkg,
+
 				color_bgr: colorBGR, // '{"blue": "#0000FF", "red": "#FF0000", "white":"#FFFFFF"}',
 				dpi,
-				file_format: fileFormat
+				file_format: file_format,
+				file_name: `${fileName}`,
+				color_type: def_bkg,
+				inch_type: inch_type
       }
     }).then((res) => {
-      console.log('res', res);
+			if (res.code == 200) {
+				Taro.setStorageSync('upload_img', res.data.image || '');
+				appStore.$patch({
+					selectImageUrl: res.data.image
+				})
+				Taro.redirectTo({
+						url: `/pages/modify/index`,
+        })
+			}
     })
 
     // Taro.uploadFile({

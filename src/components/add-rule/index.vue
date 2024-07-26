@@ -4,11 +4,11 @@
         <view class="rule-main">
             <image class="rule-img"  mode="widthFix" :src="verifyImg" />
         </view>
-        <template v-if="'inchInfo' in data">
-          <view class="rule-pos rule-pos-top">{{data.inchInfo.pixel[0]}}px</view>
-          <view class="rule-pos rule-pos-bottom">{{data.inchInfo.printSize[0]}}mm</view>
-           <view class="rule-pos rule-pos-left"> <text class="rule-text-left">{{data.inchInfo.pixel[1]}}px</text></view>
-          <view class="rule-pos rule-pos-right"><text class="rule-text-right">{{data.inchInfo.printSize[1]}}mm</text></view>
+        <template v-if="'inch_info' in data">
+          <view class="rule-pos rule-pos-top">{{data.inch_info.pixel[0]}}px</view>
+          <view class="rule-pos rule-pos-bottom">{{data.inch_info.print_size[0]}}mm</view>
+           <view class="rule-pos rule-pos-left"> <text class="rule-text-left">{{data.inch_info.pixel[1]}}px</text></view>
+          <view class="rule-pos rule-pos-right"><text class="rule-text-right">{{data.inch_info.print_size[1]}}mm</text></view>
         </template>
     </view>
 </view>
@@ -31,6 +31,7 @@ const {data, verifyImg} = toRefs(props);
   padding: 32rpx;
   // height: 856rpx;
   box-sizing: border-box;
+
 }
 .rule-wp {
   position:relative;
@@ -42,7 +43,7 @@ const {data, verifyImg} = toRefs(props);
   z-index: 88;
 }
 .rule-main {
-  
+
 }
 .rule-img {
   width: 100%;
@@ -94,8 +95,8 @@ const {data, verifyImg} = toRefs(props);
 
 .rule-pos-left {
   left: -21rpx;
-  top: 15%;
-  height: 70%;
+  top: 10%;
+  height: 80%;
   width: 40rpx;
   background: #fff;
   display: flex;
@@ -107,7 +108,7 @@ const {data, verifyImg} = toRefs(props);
   position:absolute;
   content: ' ';
   top: 0rpx;
-  left: 20rpx;
+  left: 18rpx;
   width: 4rpx;
   height: 40%;
   background: #eee;
@@ -117,7 +118,7 @@ const {data, verifyImg} = toRefs(props);
   position:absolute;
   content: ' ';
   bottom: -10rpx;
-  left: 20rpx;
+  left: 18rpx;
   width: 4rpx;
   height: 40%;
   background: #eee;
@@ -136,8 +137,8 @@ const {data, verifyImg} = toRefs(props);
 
 .rule-pos-right {
   right: -21rpx;
-  top: 15%;
-  height: 70%;
+  top: 10%;
+  height: 80%;
   width: 40rpx;
   background: #fff;
   display: flex;
@@ -149,7 +150,7 @@ const {data, verifyImg} = toRefs(props);
   position:absolute;
   content: ' ';
   top: 0rpx;
-  right: 20rpx;
+  right: 17rpx;
   width: 4rpx;
   height: 40%;
   background: #eee;
@@ -159,7 +160,7 @@ const {data, verifyImg} = toRefs(props);
   position:absolute;
   content: ' ';
   bottom: -10rpx;
-  right: 20rpx;
+  right: 17rpx;
   width: 4rpx;
   height: 40%;
   background: #eee;
@@ -174,4 +175,9 @@ const {data, verifyImg} = toRefs(props);
   // transform: rotate(180deg);
   writing-mode: vertical-rl;
 }
+
+.nut-tab-pane{
+		padding: 10rpx;
+		border-radius: 16rpx;
+	}
 </style>

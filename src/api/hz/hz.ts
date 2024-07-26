@@ -22,8 +22,8 @@ export async function test(
 
 
 /** 全部寸照类型API */
-export async function inchtypesApi(options: Object) {
-  return http('/inchtypes', {
+export async function inchTypesApi(options: Object) {
+  return http('/inchTypes', {
     method: 'GET',
     ...(options || {}),
   });

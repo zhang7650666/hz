@@ -30,31 +30,33 @@ const handleChoosePhoto = (type: any) =>{
         sizeType:['original', 'compressed'],
         count: 1,
         success: (res) => {
-          // getImageInfo(res);
-          appStore.selectImageUrl = res.tempFilePaths[0];
-          imgToBase64(res.tempFilePaths[0]);
-          Taro.redirectTo({
-            url: `/pages/verify/index?${qs.stringify(porps.query)}`,
-          })
+					console.log('res====fsfsfs', res)
+					appStore.selectImageUrl = res.tempFilePaths[0];
+          getImageInfo(res);
+          // imgToBase64(res.tempFilePaths[0]);
+          // Taro.redirectTo({
+          //   url: `/pages/verify/index?${qs.stringify(porps.query)}`,
+          // })
         },
         fail: (err) => {
-          Taro.showToast({title: `选择文件失败: ${err}`, icon: 'none'});
+          Taro.showToast({title: `选择文件失败`, icon: 'none'});
         }
       })
     };
     // 获取图片信息
     const getImageInfo = (imgInfo) => {
-      console.log('获取图片信息');
+      console.log('获取图片信息', imgInfo.tempFilePaths);
       Taro.getImageInfo ({
         src: imgInfo.tempFilePaths[0],
         success: (res) => {
+					console.log('获取图片信息', res)
           const {width, height, path} = res;
           const wMax = 2000;
           const hMax = 2000;
           const isH = width <= height;
           // 图像宽高一条大于2000，就压缩，1：竖 => 以高度压缩；2： 横 => 以宽度压缩
           if (width > wMax || height > hMax) {
-            fileCOmpress(imgInfo, isH);
+            fileCOmpress(res.path, isH);
           }
           else {
             imgToBase64(path);
@@ -66,16 +68,19 @@ const handleChoosePhoto = (type: any) =>{
       });
     };
     // 文件压缩
-    const fileCOmpress = (imgInfo, isH) => {
+    const fileCOmpress = (imgPath, isH) => {
+			console.log('开始压缩', imgPath);
       Taro.compressImage ({
-        src: imgInfo.apFilePaths,
+        src: imgPath,
         quality: 90,
         ...(isH ? {compressedHeight: 2000} : {compressedWidth: 2000}),
         success (res) {
-          appStore.selectImageUrl = res.tempFilePaths[0];
-          Taro.redirectTo({
-						url: `/pages/verify/index?${qs.stringify(porps.query)}`,
-          })
+					console.log('压缩结束', res)
+          appStore.selectImageUrl = res.tempFilePath;
+					imgToBase64(res.tempFilePath)
+          // Taro.redirectTo({
+					// 	url: `/pages/verify/index?${qs.stringify(porps.query)}`,
+          // })
         },
         fail (err) {
           Taro.showToast({title: `压缩文件失败: ${err}`, icon: 'none'});
@@ -84,14 +89,13 @@ const handleChoosePhoto = (type: any) =>{
     };
     // 将图片转成base64
     const imgToBase64 = (filePath: string) => {
-      console.log('将图片转成base64', porps.query);
       const fs = Taro.getFileSystemManager();
       fs.readFile({
         filePath: filePath,
         encoding: 'base64',
-        success:({ data }) => {
+        success:(res) => {
           // const base64 = Taro.arrayBufferToBase64(data);
-          appStore.selectImageBase = data;
+          appStore.selectImageBase = res.data;
           Taro.redirectTo({
             url: `/pages/verify/index?${qs.stringify(porps.query)}`,
           })
@@ -109,7 +113,8 @@ const handleChoosePhoto = (type: any) =>{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 32rpx 88rpx;
+  // padding: 20rpx 32rpx 88rpx;
+	padding: 20rpx 32rpx 50rpx;
   box-sizing: border-box;
   background: #fff;
 

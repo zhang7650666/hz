@@ -24,6 +24,7 @@ const emit = defineEmits(['click'])
 const state = reactive({
   checkedIcon,
   current: appStore.color_type,
+
   // isClick?: false,
 })
 
@@ -32,7 +33,6 @@ const {current} = toRefs(state);
 
 const onTabChange = (colorType: string, val: {colorName: string, colorBGR: string}) => {
       state.current = colorType;
-			console.log('fsfsdfsfs', {colorType, colorBGR: val.colorBGR})
       emit('click', {colorType, colorBGR: val.colorBGR})
 };
 
@@ -58,15 +58,14 @@ useReady(() => {
     flex-direction: column;
     align-items: center;
     position:relative;
+    width: 112rpx;
     padding: 40rpx 0;
-		margin-right: 30rpx;
 
-    // &:first-child {
-    //   width: auto;
-    // }
+    &:first-child {
+      width: auto;
+    }
     &:last-child {
-      // width: auto;
-			margin-right: 0;
+      width: auto;
     }
     .tab-color{
       width: 64rpx;

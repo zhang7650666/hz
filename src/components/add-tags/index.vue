@@ -17,7 +17,7 @@ const {listData} = toRefs(props);
 <style lang="scss">
 .add-tags {
   display: flex;
-  justify-content: start;
+  // justify-content: start;
   flex-wrap: wrap;
   width: 100%;
   padding: 20rpx 0rpx 34rpx;

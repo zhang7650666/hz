@@ -29,32 +29,35 @@ definePageConfig({
   navigationBarTitleText: '证件照采集中心'
 });
 
-useLoad(() => {
+useLoad(async () => {
   // 获取用户信息并存储数据
-	// userStore.getUserInfo();
-  appStore.getTemplateList();
+	userStore.getUserInfo();
+  await appStore.getTemplateList();
   state.tabs = appStore.$state.tabs;
+	console.log(' state.tabs====',  state.tabs)
+	state.current = state.tabs[1].table_id
 });
 
 // 获取全部尺寸
-// async function getInchtypes() {
-//   const res:any = await inchtypesApi({});
+// async function getinch_types() {
+//   const res:any = await inchypesApi({});
 //   console.log('res', res);
 //   if (res.code == 200) {
 //     state.tabs = [{
-//       inchInfos: [],
-//       tableId: 'all',
-//       tableName: '全部'
+//       inch_infos: [],
+//       table_id: 'all',
+//       table_name: '全部'
 //     }].concat(res.data);
 //   }
 // }
 
 const comtabs = computed(() => {
+	console.log('appStore.$state.tabs', appStore.$state.tabs)
   return appStore.$state.tabs
 })
 
 
-// getInchtypes();
+// getinch_types();
 
 // 滚动
 // usePageScroll(res => {
@@ -71,8 +74,8 @@ const onSearchBarTap = () => {
 };
 // 点击tab切换
 const onChange = (item:any) => {
-  state.current = item.tableId;
-  state.toView = "s" + item.tableId;
+  state.current = item.table_id;
+  state.toView = "s" + item.table_id;
   // Taro.pageScrollTo({
   //   scrollTop: Math.min(this.data.tabsTop, this.data.pageScrollTop),
   // });
@@ -115,14 +118,14 @@ const scroll = (e) => {
     <view class="tabs-wp">
       <nut-tabs  class="tabs" v-model="state.current" title-scroll title-gutter="10" name="tabName">
         <template #titles>
-          <view v-for="item in comtabs" :key="item.tableId" class="custom-tab-item" @click="() => onChange(item)">
+          <view v-for="item in comtabs" :key="item.table_id" class="custom-tab-item" @click="() => onChange(item)">
             <view
               class="custom-title"
               :class="{
-                active: state.current == item.tableId
+                active: state.current == item.table_id
               }"
             >
-              {{ item.tableName }}
+              {{ item.table_name }}
             </view>
           </view>
         </template>
@@ -141,10 +144,10 @@ const scroll = (e) => {
             @scroll="scroll"
           >
           <template  v-for="item in comtabs">
-            <view v-if="!!item.inchInfos.length" :id="item.tableId">
-              <add-title :title="item.tableName" :id="`s${item.tableId}`"  :is-show-icon="true"></add-title>
-              <view v-for="card in item.inchInfos">
-                <add-card :info="card" :tableId="item.tableId"></add-card>
+            <view v-if="!!item.inch_infos.length" :id="item.table_id">
+              <add-title :title="item.table_name" :id="`s${item.table_id}`"  :is-show-icon="true"></add-title>
+              <view v-for="card in item.inch_infos">
+                <add-card :info="card" :table_id="item.table_id"></add-card>
               </view>
             </view>
           </template>
@@ -156,6 +159,14 @@ const scroll = (e) => {
 </template>
 
 <style lang="scss">
+//隐藏滚动条
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+  display: none;
+}
+
 .page-box {
   padding: 32rpx 0 0rpx !important;
   background: #F3F7FA;
@@ -235,6 +246,7 @@ const scroll = (e) => {
 .custom-title.active {
   font-weight: 600;
   color: #333333 !important;
+	font-size: 28rpx;
 }
 
 </style>

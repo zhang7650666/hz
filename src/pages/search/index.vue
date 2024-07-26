@@ -4,23 +4,26 @@
       <view class="page-wp">
         <!-- 搜索框 -->
         <view class="search-wp">
-          <nut-searchbar v-model="state.value" placeholder="输入想要拍摄的证件照名称" clearable @click-input="onChange" @clear="onClear" >
-              <template #rightin >
+          <nut-searchbar v-model="state.value" placeholder="输入想要拍摄的证件照名称" clearable @change="onChange" @clear="onClear" @search="onChange">
+              <!-- <template #rightin >
                 <Search2 @click="onConfirm"/>
-              </template>
+              </template> -->
+							<template v-slot:rightout>
+								<view class="text-#336CFF"  @click="onConfirm">搜索</view>
+							</template>
             </nut-searchbar>
         </view>
         <!-- 没有查询到结果显示历史和热门数据存在显示 -->
         <view class="search-container" v-if="!state.searchList.length">
           <view v-if="!state.value.length">
-            <view>
+            <view v-if="state.history.length">
               <view class="history">
                 <text class="h-desc">历史搜索</text>
-                <IconFont name="DeleteOutline" @click="onDelete"/>
+                <IconFont :name="delIcon" size="16" @click="onDelete"/>
               </view>
-              <add-tags :listData="state.history" class="history-list" @click="k => state.value = k"/>
+              <add-tags :listData="state.history" class="history-list" @click="v => hotTagClick(v)"/>
             </view>
-            <view>
+            <view v-if="state.hot.length">
               <view class="history">
                 <text class="h-desc">热门搜索</text>
               </view>
@@ -36,8 +39,8 @@
           </view>
         </view>
         <view class="search-results" v-else>
-          <view  class="component" v-for="info in state.searchList">
-            <add-card :info="info"></add-card>
+          <view  class="component" v-for="(info,index) in state.searchList" :key="index">
+            <add-card :info="info.inch_info" :table_id="info.table_id" :highlightedSubstring="state.value" ></add-card>
           </view>
         </view>
       </view>
@@ -51,6 +54,7 @@ import { Search2 } from '@nutui/icons-vue-taro';
 import { useAppStore} from '@/store';
 import {addToHistory} from '@/utils/fn';
 import {getHotwordList, getSearchList} from '@/api/hz/index';
+import delIcon from '@/assets/images/del.png'
 
 const appStore = useAppStore();
 
@@ -78,20 +82,38 @@ const state = reactive<{
 
  // 删除立式记录
  const onDelete = () => {
-    // Taro.confirm({
-    //   content: '确定删除相关历史？',
-    //   success: (res) => {
-    //     if (res.confirm) {
-    //       my.setStorageSync({ key: 'searchHistory', data: [] }),
-    //       this.setData({
-    //         history: [],
-    //       });
-    //     }
-    //   },
-    // })
+	Taro.showModal({
+    title: '确认操作',
+    content: '确定删除相关历史？',
+    showCancel: true,
+    cancelText: '取消',
+    cancelColor: '#000000',
+    confirmText: '确定',
+    confirmColor: '#3CC51F',
+    success(res) {
+      if (res.confirm) {
+        console.log('用户点击确定');
+				Taro.setStorageSync( 'searchHistory', [] ),
+					state.history = [];
+        // 执行确定后的操作
+      } else if (res.cancel) {
+        console.log('用户点击取消');
+        // 执行取消后的操作
+      }
+    },
+    fail(err) {
+      console.error('Modal failed', err);
+    }
+  });
+
+
   };
   // 监听输入框变化 (保留 change 方法，预防后续使用)
-  const onChange = () => {
+  const onChange = (val?: string) => {
+
+		if(val) {
+			state.value = val;
+		}
     // 如果keyword 不存在
     if (!state.value) {
       state.searchList = [];
@@ -100,8 +122,10 @@ const state = reactive<{
     }
     // 过滤数据
     // const pattern = new RegExp(state.value, 'i');
-    const searchList = appStore.allTemplateList?.filter(v => state.value == v.inchName);
-    state.searchList = searchList;
+    // const searchList = appStore.allTemplateList?.filter(v => v.inch_name.includes(state.value));
+		// console.log('searchList', searchList)
+    // state.searchList = searchList;
+		radySearchList()
   };
 
   const onConfirm = () => {
@@ -117,25 +141,28 @@ const state = reactive<{
   const hotTagClick = (v: string) => {
     state.value = v;
     state.history = addToHistory(state.value)
+		radySearchList()
   }
 
   // 热词列表;
   const readHotwordList = () => {
     getHotwordList({}).then((res) => {
-      state.hot = res.data.data || [];
+      state.hot = res.data || [];
     })
   }
 
   // 搜索列表
   const radySearchList = () => {
-    getSearchList({data: {keyword: state.value}}).then(res => {
-      state.searchList = res.data || [];
+    getSearchList({params: {keyword: state.value}}).then(res => {
+			state.searchList = res.data || [];
+      // state.searchList = (res.data || []).map(v => v.inch_info);
     })
   }
 
 
   useLoad((query: {keyword: string}) => {
     state.value = query.keyword || '';
+		console.log('state.value' ,  query.keyword,  state.value)
     state.history = Taro.getStorageSync('searchHistory') || [];
     !!query.keyword && radySearchList();
     appStore.getTemplateList();

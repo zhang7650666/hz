@@ -10,6 +10,7 @@ export default defineAppConfig({
     'pages/category/index',
     'pages/verify/index',
     'pages/search/index',
+		'pages/proto/index',
   ],
   window: {
     backgroundColor: '#fff',

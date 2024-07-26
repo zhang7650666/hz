@@ -3,29 +3,30 @@
   <view class="add-card" @click="onClick">
     <view class="left">
         <view class="l-p first">
-            <text class="title truncate max-w-200rpx">{{ info.inchName }}</text>
-            <text v-if="info.supportReceipts" class="sup sup1">支持回执</text>
-            <text  v-if="info.supportQualified" class="sup sup2">支持合规检测</text>
+						<div class="title truncate max-w-200rpx" v-html="highlightSubstring(info.inch_name, props.highlightedSubstring)"> </div>
+            <text v-if="info.support_receipts" class="sup sup1">支持回执</text>
+            <text  v-if="info.support_qualified" class="sup sup2">支持合规检测</text>
         </view>
         <view class="second">{{info.explain}}</view>
         <view class="l-p third">
-            <view v-if="info.printSize" class="tags">
+            <view v-if="info.print_size" class="tags">
                 <text class="tag">尺寸</text>
-                <text class="desc">{{info.printSize[0]}}*{{info.printSize[1]}}mm</text>
+                <text class="desc">{{info.print_size[0]}}*{{info.print_size[1]}}mm</text>
             </view>
             <view  v-if="info.pixel" class="tags">
                 <text class="tag">像素</text>
-                <text class="desc">{{info.pixel[0]}}*{{info.pixel[1]}}mm</text>
+                <text class="desc">{{info.pixel[0]}}*{{info.pixel[1]}}px</text>
             </view>
             <view class="tags">
                 <text class="tag">大小</text>
-                <text class="desc">{{info.fileSize}}</text>
+                <text class="desc">{{info.file_size}}</text>
             </view>
         </view>
     </view>
     <view class="right">
         <!-- <ant-icon type="RightOutline" className="right-outline"/> -->
-        <IconFont name="rect-right" color="#3C3C43"></IconFont>
+        <!-- <IconFont name="rect-right" color="#3C3C43"></IconFont> -->
+				<IconFont name="rect-right" ></IconFont>
     </view>
 </view>
 </template>
@@ -41,13 +42,29 @@ defineComponent({
 
 const props = defineProps<{
   info: Object,
-  tableId: number | string,
+  table_id: number | string,
+	highlightedSubstring?: string;
 }>()
 
 
  const onClick = () => {
-    Taro.navigateTo({url: `/pages/category/index?typeid=${props.tableId}&inchtype=${props.info?.inchType}`,});
+    Taro.navigateTo({url: `/pages/category/index?typeid=${props.table_id}&inch_type=${props.info?.inch_type}`,});
   };
+
+	// 替换函数
+const highlightSubstring = (str, substring) => {
+  // 检查子串是否存在
+  if (str.includes(substring)) {
+    // 使用正则表达式匹配子串
+    const regex = new RegExp(substring, "g");
+    // 替换子串为带有红色标记的HTML
+    const highlightedString = str.replace(regex, `<text class="text-#336CFF">${substring}</text>`);
+    return highlightedString;
+  } else {
+    // 如果子串不存在，则返回原字符串
+    return str;
+  }
+}
 </script>
 <style lang="scss">
 .add-card {

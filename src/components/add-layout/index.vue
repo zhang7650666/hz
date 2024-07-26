@@ -31,9 +31,11 @@ const props = defineProps<{
   padding: 32rpx;
 }
 .layout-img {
-  width: 622rpx;
-  height: 324rpx;
-  background-size: 622rpx 324rpx;
+  // width: 622rpx;
+  // height: 324rpx;
+  // background-size: 622rpx 324rpx;
+	// overflow: hidden;
+	width: 100%;
 }
 
 </style>

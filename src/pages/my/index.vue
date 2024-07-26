@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRefs } from 'vue';
+import { reactive, toRefs, onMounted } from 'vue';
 import zjz from '@/assets/images/zjz.png';
 import  kefu from '@/assets/images/kefu.png';
 import  abount from '@/assets/images/abount.png';
@@ -35,9 +35,38 @@ const state = reactive({
 const {userInfo,} = toRefs(state);
 
 const handleOrderList = () => {
+	console.log('wx', wx)
+// 	Taro.openCustomerServiceChat({
+//   extInfo: {url: ''},
+//   corpId: '',
+//   success: function (res) { }
+// })
+
+	// wx.openCustomerServiceChat({
+	// 	extInfo: {url: ''},
+	// 	corpId: '',
+	// 	success(res) {}
+	// })
+
+
   Taro.navigateTo({url: '/pages/order-list/index'})
 }
 
+const handleProto = () => {
+  Taro.navigateTo({url: '/pages/proto/index'})
+}
+
+
+onMounted(() => {
+	wx.getUserInfo({
+		success: function(res) {
+			console.log('获取用户信息', res)
+			state.userInfo = res.userInfo
+			var nickName = userInfo.nickName
+			var avatarUrl = userInfo.avatarUrl
+		}
+	})
+})
 </script>
 <template>
   <basic-layout show-tab-bar>
@@ -45,10 +74,10 @@ const handleOrderList = () => {
     <view class="my-wp">
       <!-- 用户信息 -->
       <view class="user-info">
-        <image mode="widthFix" :src="userInfo.avatar" class="user-avatar"></image>
+        <image mode="widthFix" :src="userInfo.avatarUrl" class="user-avatar"></image>
         <view class="user-main">
           <view class="user-name">{{userInfo?.nickName}}</view>
-          <view class="user-id">用户ID：{{userInfo?.userId}}</view>
+          <!-- <view class="user-id">用户ID：{{userInfo?.userId}}</view> -->
         </view>
       </view>
       <addList
@@ -65,22 +94,23 @@ const handleOrderList = () => {
       <addList
         header=""
         :rd="state.radius">
-        <addListItem
+        <!-- <addListItem
           :image="state.kefu"
           arrow="right"
           @onClick="handleOrderList"
           extraBrief="每日9:00-21:00"
           data-info="客服中心">
           客服中心
-        </addListItem>
+        </addListItem> -->
         <addListItem
           :image="state.abount"
           arrow="right"
-          @onClick="handleOrderList"
+          @onClick="handleProto"
           data-info="关于我们">
           关于我们
         </addListItem>
       </addList>
+
         <view class="s-s">
         <!-- 轮播图 -->
           <custom-swiper :list="state.swiperList"/>
@@ -95,6 +125,9 @@ const handleOrderList = () => {
   width: 100%;
   background: #F1F4F8;
   min-height: 90vh;
+}
+.my-wp .mt-30 {
+  padding-top: 32rpx;
 }
  .my-wp .ant-list {
   padding-bottom: 32rpx;

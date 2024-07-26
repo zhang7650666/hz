@@ -1,9 +1,17 @@
 <template>
   <view class="add-footer" @click="handleDownload">
-    <text class="download-btn" >下载电子版（无水印）</text>
+    <text class="download-btn" >{{btnText}}</text>
   </view>
 </template>
 <script setup lang="ts">
+
+const props = defineProps<{
+    btnText: String,
+  }>({
+		default: () => ({
+      btnText: '下一步'
+    })
+	})
 const emitr = defineEmits(['click'])
 const handleDownload = () => {
   emitr('click')

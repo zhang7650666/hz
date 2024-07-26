@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useRoutePath } from '@/composables';
-import {inchtypesApi} from '@/api/hz/index';
+import {inchTypesApi} from '@/api/hz/index';
 import Taro from '@tarojs/taro';
 const plat_env = Taro.getEnv();
 
@@ -9,10 +9,14 @@ interface TabInfo {
 };
 
 interface Tabs {
-  tableId: number | string,
-  tableName: string,
+  table_id: number | string,
+  table_name: string,
   inchInfos: TabInfo[],
   selectImageUrl: string,
+}
+interface AddedServices {
+	added_png: boolean
+	added_colours: boolean
 }
 
 interface AuthState {
@@ -22,6 +26,9 @@ interface AuthState {
   tabs: Tabs,
   allTemplateList: TabInfo[],
   currentTemplateData: TabInfo,
+	color_type: string,
+	added_services: AddedServices,
+	checkedColors: string[]
 }
 
 
@@ -45,7 +52,7 @@ interface AuthState {
         }
       })
     } else if (platform === 'android') {
-      console.error('保存图片失败: ', '请在系统设置找到支付宝应用并开启文件和多媒体写入权限', JSON.stringify(err));
+      console.error('保存图片失败: ', '请在系统设置找到微信应用并开启文件和多媒体写入权限', JSON.stringify(err));
       Taro.showToast({
         title: '保存图片失败， 请在系统设置找到应用并开启文件和多媒体写入权限',
         icon: 'error',
@@ -61,7 +68,13 @@ export const useAppStore = defineStore('app-store', {
     allTemplateList: [],
     selectImageUrl: '',
     selectImageBase: '',
-    currentTemplateData: {}
+    currentTemplateData: {},
+		color_type: '',
+		added_services: {
+			added_png: false,
+			added_colours: false
+		},
+		checkedColors: [], // 选中背景色
   }),
   getters: {
     getActiveTab: state => state.activeTab
@@ -76,34 +89,48 @@ export const useAppStore = defineStore('app-store', {
     },
     getTemplateList(){
       if (this.tabs.length > 0) return ;
-      return inchtypesApi({}).then((res) => {
+      return inchTypesApi({}).then((res) => {
           if (res.code == 200) {
             this.tabs = [{
-              inchInfos: [],
-              tableId: 'all',
-              tableName: '全部'
+              inch_infos: [],
+              inch_type: 'all',
+              table_name: '全部'
             }].concat(res.data);
 
             this.allTemplateList = res.data.reduce((list, item) => {
-              list = list.concat(item.inchInfos);
+              list = list.concat(item.inch_infos);
               return list;
             }, [])
           }
       })
     },
     saveImage(url: string){
+
+
       return new Promise((resolve, reject) => {
-        // Taro.saveImageToPhotosAlbum, 支付宝小程序 在ios上不能并发，所以使用原生API
-        Taro.saveImageToPhotosAlbum ({
-          filePath: url || '',
-          success: ()  => {
-            resolve({});
-          },
-          fail:(err: any) => {
-            saveToPhotosAlbumErrTips(err);
-            reject({});
-          }
-        })
+        wx.downloadFile({
+					url: url, // 图片资源的网络URL
+					success: (res) => {
+						if (res.statusCode === 200) {
+							Taro.saveImageToPhotosAlbum ({
+								filePath: res.tempFilePath || '',
+								success: ()  => {
+									resolve({});
+								},
+								fail:(err: any) => {
+									saveToPhotosAlbumErrTips(err);
+									reject({});
+								}
+							})
+						}
+					},
+					fail: (err) => {
+						// 下载失败处理
+						reject({});
+						console.log('下载图片失败：', err);
+					}
+				});
+
       })
 
     }

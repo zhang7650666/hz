@@ -15,8 +15,8 @@
       </nut-tabs>
     </view>
     <!-- 更换背景色tab -->
-    <view  v-if="state.current == 'panerkey0' && props.templateData.inchInfo">
-      <add-background :data="props.templateData.inchInfo" @click="val => onBgChange(val)"></add-background>
+    <view  v-if="state.current == 'panerkey0' && appStore.currentTemplateData.inch_info">
+      <add-background :data="appStore.currentTemplateData.inch_info" @click="({colorType, colorBGR}) => onBgChange(colorType, colorBGR)"></add-background>
     </view>
   </view>
 </template>
@@ -29,26 +29,30 @@ import activeIcon1_c from '@/assets/images/cloth.png';
 import activeIcon1 from '@/assets/images/cloth.png';
 import activeIcon2_c from '@/assets/images/text.png';
 import activeIcon2 from '@/assets/images/text.png';
+import {useAppStore, useUserStore} from '@/store/index';
 const props = defineProps<{
   templateData:{}
 }>()
-const emitr = defineEmits(['bgchange', 'tabchange'])
+
+const appStore = useAppStore();
+
+const emit = defineEmits(['bgchange', 'tabchange'])
 const tabs = [
     {
       title:"换底色",
       icon: activeIcon,
       activeIcon: activeIcon_c,
     },
-    {
-      title:"换服装",
-      icon: activeIcon1,
-      activeIcon: activeIcon1_c,
-    },
-    {
-      title:"加文字",
-      icon: activeIcon2,
-      activeIcon: activeIcon2_c,
-    },
+    // {
+    //   title:"换服装",
+    //   icon: activeIcon1,
+    //   activeIcon: activeIcon1_c,
+    // },
+    // {
+    //   title:"加文字",
+    //   icon: activeIcon2,
+    //   activeIcon: activeIcon2_c,
+    // },
   ];
 
   const state = reactive({
@@ -59,11 +63,11 @@ const tabs = [
 
   const onTabChange = (val:string) => {
     state.current = `panerkey${val}`
-    emitr('tabchange', `panerkey${val}`)
+    emit('tabchange', `panerkey${val}`)
   };
 
-  const onBgChange = (val: string) => {
-    emitr('bgchange', val)
+  const onBgChange = (colorType: string, colorBGR: string) => {
+    emit('bgchange', {colorType, colorBGR})
   }
 
 
@@ -113,6 +117,13 @@ const tabs = [
   // align-items: center;
   // justify-content: center;
   // cursor: pointer;
+
+
+  &.active {
+    .tab-title {
+			color: #336CFF;
+		}
+  }
 }
 .custom-title {
   color: black;

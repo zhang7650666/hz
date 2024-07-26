@@ -24,15 +24,15 @@ export async function test(
 
 /** 用户登录API */
 export async function loginApi(options: Object) {
-  return http('/login/', {
-    method: 'POST',
+  return http(`/login`, {
+    method: 'GET',
     ...(options || {}),
   });
 }
 
 
 /** 全部寸照类型API */
-export async function inchtypesApi(options: Object) {
+export async function inchTypesApi(options: Object) {
   return http('/inchtypes', {
     method: 'GET',
     ...(options || {}),
